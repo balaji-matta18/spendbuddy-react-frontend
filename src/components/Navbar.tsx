@@ -46,7 +46,8 @@ export const Navbar = () => {
             w-[90%]
             max-w-[1550px]
             flex items-center justify-between
-            pl-10 pr-14
+            pl-10 pr-12
+            // pl-10 pr-8 max-md:pr-1
             max-md:h-[75px]
             max-md:w-[95%]
           "

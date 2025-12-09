@@ -1,54 +1,41 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Menu, X, LogOut } from "lucide-react";
+
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { isAuthenticated, signOut } = useAuth();
+  const location = useLocation();
+  
 
   return (
     <nav className="w-full fixed top-0 z-50 bg-[#1a1a1a] py-6">
 
-      {/* GRID BEHIND NAVBAR — HIDDEN INSIDE CAPSULE, FADES BELOW */}
+      {/* GRID BACKGROUND */}
       <div
-      className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
-        
-      // <<< controls vertical size
-
           backgroundImage: `
             linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)
           `,
           backgroundSize: "22px 22px",
           opacity: 0.45,
-
-          // MASK hides the grid inside the navbar capsule area
           WebkitMaskImage: `
-            linear-gradient(
-              to bottom,
-              rgba(0,0,0,0) 0%,
-              rgba(0,0,0,0) 55%,
-              rgba(0,0,0,1) 100%
-            )
+            linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,1) 100%)
           `,
           maskImage: `
-            linear-gradient(
-              to bottom,
-              rgba(0,0,0,0) 0%,
-              rgba(0,0,0,0) 55%,
-              rgba(0,0,0,1) 100%
-            )
+            linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,1) 100%)
           `,
           zIndex: -1,
         }}
       />
 
-      {/* NAVBAR CONTENT */}
+      {/* NAVBAR CAPSULE */}
       <div className="w-full flex justify-center">
-
-        {/* AXIO-STYLE NAV PILL */}
         <div
           className="
             bg-[#1a1a1a]
@@ -59,51 +46,85 @@ export const Navbar = () => {
             w-[90%]
             max-w-[1550px]
             flex items-center justify-between
-            pl-[38px] pr-[55px]
-
+            pl-10 pr-14
             max-md:h-[75px]
             max-md:w-[95%]
-            max-md:px-[25px]
           "
         >
 
-          {/* LOGO */}
-          <div className="flex items-center">
-            <span
-              className="
-                text-[#539600]
-                text-[36px]
-                font-extrabold
-                tracking-tight
-                py-[3px]
+                  <span className="
+          text-[#539600]
+          text-[36px]
+          font-extrabold
+          tracking-tight
+          py-[3px]
+          max-md:text-[19px]
 
-                max-md:text-[19px]
-              "
-            >
-              SpendBuddy
-            </span>
-          </div>
+          /* Move logo slightly left on mobile + tablet */
+          ml-[-15px]      /* mobile */
+          sm:ml-[-8px]   /* large mobile */
+          md:ml-[-10px]  /* tablet */
 
-          {/* CENTER LINKS (DESKTOP) */}
-          <div className="hidden md:flex items-center gap-[28px] ml-[418px]">
-            <Link to="/" className="text-white text-[16px] font-medium">Home</Link>
-            <Link to="/dashboard" className="text-white text-[16px] font-medium">Dashboard</Link>
-            <Link to="/expenses" className="text-white text-[16px] font-medium">Expenses</Link>
-            <Link to="/budgets" className="text-white text-[16px] font-medium">Budgets</Link>
-            <Link to="/reports" className="text-white text-[16px] font-medium">Reports</Link>
-          </div>
+          /* Keep desktop aligned normally */
+          lg:ml-[-2px]
+        ">
+          SpendBuddy
+        </span>
 
-          {/* RIGHT-SIDE CTA (DESKTOP) */}
-          <div className="hidden md:flex">
+
+          {/* RIGHT — MENU + CTA (DESKTOP) */}
+          <div className="hidden lg:flex items-center gap-6 lg:ml-[-12px]">
+
+                <Link
+                to="/"
+                className={`text-[16px] font-medium ${
+                  location.pathname === "/" ? "text-[#daf180]" : "text-white"
+                }`}
+              >
+                Home
+          </Link>
+
+                      <Link
+            to="/dashboard"
+            className={`text-[16px] font-medium ${
+              location.pathname.startsWith("/dashboard") ? "text-[#daf180]" : "text-white"
+            }`}
+          >
+            Dashboard
+          </Link>
+
+                          <Link
+            to="/expenses"
+            className={`text-[16px] font-medium ${
+              location.pathname.startsWith("/expenses") ? "text-[#daf180]" : "text-white"
+            }`}
+          >
+            Expenses
+          </Link>
+
+                  <Link
+            to="/budgets"
+            className={`text-[16px] font-medium ${
+              location.pathname.startsWith("/budgets") ? "text-[#daf180]" : "text-white"
+            }`}
+          >
+            Budgets
+          </Link>
+
+                    <Link
+            to="/reports"
+            className={`text-[16px] font-medium ${
+              location.pathname.startsWith("/reports") ? "text-[#daf180]" : "text-white"
+            }`}
+          >
+            Reports
+          </Link>
+
+
             {isAuthenticated ? (
               <button
                 onClick={signOut}
-                className="
-                  text-[#539600]
-                  text-[17px]
-                  font-semibold
-                  flex items-center gap-1
-                "
+                className="text-[#539600] text-[17px] font-semibold flex items-center gap-1"
               >
                 Logout
                 <LogOut className="h-4 w-4" />
@@ -111,12 +132,7 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/auth"
-                className="
-                  text-[#539600]
-                  text-[17px]
-                  font-semibold
-                  flex items-center gap-1
-                "
+                className="text-[#539600] text-[17px] font-semibold flex items-center gap-1"
               >
                 Get Started
                 <span className="text-[22px]">›</span>
@@ -124,18 +140,14 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* MOBILE CTA */}
-          <div className="md:hidden flex items-center mr-3">
+          {/* RIGHT — CTA + HAMBURGER (MOBILE GROUPED TOGETHER) */}
+          <div className="lg:hidden flex items-center gap-3 ml-auto pr-2">
+
+            {/* CTA (Mobile) */}
             {isAuthenticated ? (
               <button
                 onClick={signOut}
-                className="
-                  text-[#539600]
-                  text-[16px]
-                  font-semibold
-                  flex items-center gap-1
-                  ml-auto mr-[-141px]
-                "
+                className="text-[#539600] text-[15px] font-semibold flex items-center gap-1"
               >
                 Logout
                 <LogOut className="h-4 w-4" />
@@ -143,50 +155,60 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/auth"
-                className="
-                  text-[#539600]
-                  text-[16px]
-                  font-semibold
-                  flex items-center gap-1
-                  ml-[50px]
-                "
+                className="text-[#539600] text-[15px] font-semibold flex items-center gap-1"
               >
                 Get Started
-                <span className="text-[20px]">›</span>
+                <span className="text-[18px]">›</span>
               </Link>
             )}
-          </div>
 
-          {/* MOBILE MENU BUTTON */}
-          <div
-            className="
-              md:hidden
-              h-[59px] w-[59px]
-              rounded-full
-              bg-[#2d2b2b]
-              border border-[#2d2b2b]
-              flex items-center justify-center
-              ml-auto mr-[-16px]
-            "
-          >
-            <button className="text-white" onClick={() => setOpen(!open)}>
-              {open ? <X size={26} /> : <Menu size={18} />}
+            {/* HAMBURGER BUTTON */}
+            <button
+              className="h-[59px] w-[59px] rounded-full bg-[#2d2b2b] border border-[#2d2b2b]
+                         flex items-center justify-center text-white"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <X size={26} /> : <Menu size={20} />}
             </button>
+
           </div>
 
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE DROPDOWN */}
       {open && (
-        <div className="md:hidden mt-3 mx-5 bg-[#2d2b2b] border border-[#2a2a2a] rounded-xl p-5 text-white flex flex-col gap-4">
+        <div className="lg:hidden mt-3 mx-5 bg-[#2d2b2b] border border-[#2a2a2a] rounded-xl p-5 text-white flex flex-col gap-4">
           <Link to="/" onClick={() => setOpen(false)}>Home</Link>
           <Link to="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link>
           <Link to="/expenses" onClick={() => setOpen(false)}>Expenses</Link>
           <Link to="/budgets" onClick={() => setOpen(false)}>Budgets</Link>
           <Link to="/reports" onClick={() => setOpen(false)}>Reports</Link>
+
+          {isAuthenticated ? (
+            <button
+              onClick={() => {
+                signOut();
+                setOpen(false);
+              }}
+              className="text-[#539600] text-[17px] font-semibold flex items-center gap-1"
+            >
+              Logout
+              <LogOut className="h-4 w-4" />
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              onClick={() => setOpen(false)}
+              className="text-[#539600] text-[17px] font-semibold flex items-center gap-1"
+            >
+              Get Started
+              <span className="text-[22px]">›</span>
+            </Link>
+          )}
         </div>
       )}
+
     </nav>
   );
 };

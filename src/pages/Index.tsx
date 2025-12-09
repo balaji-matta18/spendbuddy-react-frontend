@@ -243,7 +243,7 @@ const Index = () => {
         <footer className="bg-[#1a1a1a] py-12 border-t border-[#141414]">
           <div className="text-center text-gray-400">
             <p>© 2024 SpendBuddy. All rights reserved.</p>
-            <p className="text-sm mt-1">Made with ❤️ for better financial wellness</p>
+            <p className="text-sm mt-1">Made with ❤ for better financial wellness</p>
           </div>
         </footer>
       </div>

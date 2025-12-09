@@ -2,101 +2,136 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/*
+  AXIO CLONE – Global Design System (HSL-based)
 */
 
 @layer base {
   :root {
-    --background: 210 17% 98%;
-    --foreground: 220 20% 15%;
+    /* ========== LIGHT MODE (rarely used on Axio) ========== */
+
+    --background: 0 0% 100%;
+    --foreground: 210 15% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 15%;
+    --card-foreground: 210 15% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
+    --popover-foreground: 210 15% 10%;
 
-    --primary: 180 80% 45%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 180 90% 55%;
+    /* Axio Neon Green */
+    --primary: 88 100% 41%;               /* #6ec800 */
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 200 90% 50%;
+    --secondary: 96 60% 30%;              /* #539600 */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 15% 92%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 210 15% 96%;
+    --muted-foreground: 220 10% 40%;
 
-    --accent: 280 85% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 88 95% 45%;
+    --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 85% 60%;
+    --destructive: 0 80% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 145 70% 50%;
+    --success: 145 70% 45%;
     --success-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 90%;
-    --ring: 180 80% 45%;
+    --border: 210 15% 88%;
+    --input: 210 15% 92%;
+    --ring: 88 100% 41%;
 
-    --radius: 0.75rem;
+    --radius: 1.5rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(180, 80%, 45%), hsl(200, 90%, 50%));
-    --gradient-hero: linear-gradient(135deg, hsl(180, 85%, 40%), hsl(200, 90%, 45%));
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(210, 20%, 98%));
-    
-    --shadow-soft: 0 4px 16px -4px hsl(220, 20%, 15%, 0.08);
-    --shadow-medium: 0 8px 24px -8px hsl(220, 20%, 15%, 0.12);
-    --shadow-large: 0 16px 48px -12px hsl(220, 20%, 15%, 0.18);
-    --shadow-glow: 0 0 32px hsl(180, 80%, 45%, 0.2);
+    /* Light Mode Gradients */
+    --gradient-primary: linear-gradient(135deg, #6ec800, #539600);
+    --gradient-hero: linear-gradient(180deg, #ffffff, #f7f7f7);
+    --gradient-card: linear-gradient(180deg, #ffffff, #f8f8f8);
 
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Shadows */
+    --shadow-soft: 0 4px 16px -4px hsl(210 10% 20% / 0.08);
+    --shadow-medium: 0 8px 24px -8px hsl(210 10% 20% / 0.12);
+    --shadow-large: 0 16px 48px -12px hsl(210 10% 20% / 0.18);
+    --shadow-glow: 0 0 24px hsl(88 100% 41% / 0.3);
   }
 
+  /* ============================================================
+     AXIO DARK MODE (Primary Mode) – Pixel-perfect clone styling
+     ============================================================ */
   .dark {
-    --background: 220 25% 8%;
-    --foreground: 210 20% 95%;
+    --background: 0 0% 4%;                 /* #0b0b0b */
+    --foreground: 0 0% 98%;
 
-    --card: 220 23% 10%;
-    --card-foreground: 210 20% 95%;
+    /* Cards use Axio dark olive gradient */
+    --card: 88 20% 12%;                    /* #1e2510 approx */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 220 23% 10%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 180 75% 55%;
-    --primary-foreground: 220 25% 8%;
-    --primary-glow: 180 85% 65%;
+    /* Axio greens */
+    --primary: 88 100% 41%;                /* #6ec800 */
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 200 85% 55%;
-    --secondary-foreground: 220 25% 8%;
+    --secondary: 96 60% 30%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 20% 15%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 280 80% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 88 95% 45%;
+    --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 80% 65%;
+    --destructive: 0 80% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 145 65% 55%;
+    --success: 145 65% 45%;
     --success-foreground: 0 0% 100%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 16%;
-    --ring: 180 75% 55%;
+    /* Borders + Inputs */
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+    --ring: 88 100% 41%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(180, 75%, 45%), hsl(200, 85%, 50%));
-    --gradient-hero: linear-gradient(135deg, hsl(180, 80%, 35%), hsl(200, 85%, 40%));
-    --gradient-card: linear-gradient(180deg, hsl(220, 23%, 12%), hsl(220, 25%, 8%));
-    
-    --shadow-soft: 0 4px 16px -4px hsl(0, 0%, 0%, 0.3);
-    --shadow-medium: 0 8px 24px -8px hsl(0, 0%, 0%, 0.4);
-    --shadow-large: 0 16px 48px -12px hsl(0, 0%, 0%, 0.5);
-    --shadow-glow: 0 0 32px hsl(180, 75%, 55%, 0.3);
+    /* Axio authentic gradients */
+    --gradient-primary: linear-gradient(135deg, #6ec800, #539600);
+    --gradient-hero: linear-gradient(180deg, #0e0f0c, #0c0c0c);
+    --gradient-card: linear-gradient(135deg, #30391c, #1a1a1a);
+
+    /* Shadow system */
+    --shadow-soft: 0 4px 16px -4px rgba(0, 0, 0, 0.25);
+    --shadow-medium: 0 8px 24px -8px rgba(0, 0, 0, 0.35);
+    --shadow-large: 0 16px 48px -12px rgba(0, 0, 0, 0.45);
+    --shadow-glow: 0 0 32px rgba(110, 200, 0, 0.35);
   }
 }
+
+.page-scale {
+  transform-origin: top center;
+}
+
+/* Desktop large */
+@media (min-width: 1600px) {
+  .page-scale {
+    transform: scale(1.15);
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 2000px) {
+  .page-scale {
+    transform: scale(1.35);
+  }
+}
+
+/* Super-wide monitors / projectors */
+@media (min-width: 2600px) {
+  .page-scale {
+    transform: scale(1.55);
+  }
+}
+
 
 @layer base {
   * {

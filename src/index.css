@@ -132,6 +132,12 @@
   }
 }
 
+:root {
+  --navbar-height-mobile: 123px; /* 75px capsule + 48px padding */
+  --navbar-height-desktop: 128px; /* 80px capsule + 48px padding */
+}
+
+
 
 @layer base {
   * {

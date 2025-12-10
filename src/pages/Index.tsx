@@ -23,36 +23,12 @@ const Index = () => {
   };
 
   const features = [
-    {
-      icon: TrendingUp,
-      title: "Track Expenses",
-      description: "Monitor every transaction with clarity",
-    },
-    {
-      icon: PiggyBank,
-      title: "Smart Budgets",
-      description: "Set limits and manage budgets effortlessly",
-    },
-    {
-      icon: BarChart3,
-      title: "Detailed Reports",
-      description: "Analyse trends with insightful charts",
-    },
-    {
-      icon: Shield,
-      title: "Secure & Private",
-      description: "Your financial data stays encrypted and safe",
-    },
-    {
-      icon: Smartphone,
-      title: "Mobile Friendly",
-      description: "Access SpendBuddy anywhere, anytime",
-    },
-    {
-      icon: Zap,
-      title: "Real-time Sync",
-      description: "Instant updates across all devices",
-    },
+    { icon: TrendingUp, title: "Track Expenses", description: "Monitor every transaction with clarity" },
+    { icon: PiggyBank, title: "Smart Budgets", description: "Set limits and manage budgets effortlessly" },
+    { icon: BarChart3, title: "Detailed Reports", description: "Analyse trends with insightful charts" },
+    { icon: Shield, title: "Secure & Private", description: "Your financial data stays encrypted and safe" },
+    { icon: Smartphone, title: "Mobile Friendly", description: "Access SpendBuddy anywhere, anytime" },
+    { icon: Zap, title: "Real-time Sync", description: "Instant updates across all devices" },
   ];
 
   const benefits = [
@@ -66,12 +42,11 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-[#1a1a1a] text-white overflow-hidden">
-      {/* GRID OVERLAY */}
+
+      {/* GRID OVERLAY – EXACTLY your design */}
       <div
-        className="pointer-events-none absolute inset-x-0"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[520px]"
         style={{
-          top: 0,
-          height: "520px",
           backgroundImage: `
             linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)
@@ -100,14 +75,19 @@ const Index = () => {
         }}
       />
 
-      {/* CONTENT ABOVE GRID */}
       <div className="relative z-10">
         <Navbar />
 
-        {/* =============== HERO SECTION =============== */}
+        {/* HERO SECTION – fully restored, no visual change */}
         <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24">
           <div className="w-full max-w-6xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.15] mb-6 text-center lg:whitespace-nowrap">
+
+            {/* Desktop: NO WRAP. Mobile: wrap allowed. */}
+            <h1 className="
+              text-4xl sm:text-5xl md:text-6xl
+              font-bold leading-[1.15] mb-6 text-center
+              lg:whitespace-nowrap
+            ">
               Track spends. Set Budgets. Stay in Control.
             </h1>
 
@@ -135,13 +115,11 @@ const Index = () => {
           </div>
         </section>
 
-        {/* =============== FEATURES =============== */}
+        {/* FEATURES */}
         <section className="bg-white text-[#050608] py-20 sm:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-                Powerful Features
-              </h2>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Powerful Features</h2>
               <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
                 Everything you need to manage your money smarter
               </p>
@@ -151,8 +129,8 @@ const Index = () => {
               {features.map((feature) => (
                 <Card
                   key={feature.title}
-                  // className="p-8 rounded-3xl bg-white shadow-xl border border-gray-200" zoom
-                  className="p-8 rounded-3xl bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#3b4a28]"
+                  className="p-8 rounded-3xl bg-gradient-to-br from-[#30391c] to-[#1a1a1a]
+                             shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#3b4a28]"
                 >
                   <div className="h-12 w-12 rounded-xl bg-[#539600] flex items-center justify-center mb-4">
                     <feature.icon className="h-6 w-6 text-[#1a1a1a]" />
@@ -165,7 +143,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* =============== BENEFITS =============== */}
+        {/* BENEFITS */}
         <section className="bg-[#3b4a28] py-20 sm:py-24 text-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -188,7 +166,8 @@ const Index = () => {
               </div>
             </div>
 
-            <Card className="p-10 rounded-3xl bg-gradient-to-br from-[#30391c] to-[#1a1a1a] text-white shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#3b4a28]">
+            <Card className="p-10 rounded-3xl bg-gradient-to-br from-[#30391c] to-[#1a1a1a]
+                               text-white shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#3b4a28]">
               <div className="text-center">
                 <div className="text-6xl font-bold text-[#539600] mb-2">₹0</div>
                 <div className="text-xl mb-4">Forever Free</div>
@@ -197,11 +176,7 @@ const Index = () => {
                   No credit card required. Start taking control of your money today.
                 </p>
 
-                <Button
-                  size="lg"
-                  asChild
-                  className="w-full bg-white text-black hover:bg-white/90 rounded-full"
-                >
+                <Button size="lg" asChild className="w-full bg-white text-black hover:bg-white/90 rounded-full">
                   <Link to="/dashboard" className="flex items-center justify-center gap-2">
                     Start Your Journey
                     <ArrowRight className="h-5 w-5" />
@@ -212,11 +187,11 @@ const Index = () => {
           </div>
         </section>
 
-        {/* =============== CTA =============== */}
+        {/* CTA */}
         <section className="py-20 sm:py-24 bg-[#1a1a1a]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {/* <Card className="p-12 sm:p-16 rounded-3xl bg-[#111417] text-center shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#303030]"> */}
-            <Card className="p-12 sm:p-16 rounded-3xl bg-gradient-to-br from-[#30391c] to-[#1a1a1a] text-center shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#3b4a28]">
+            <Card className="p-12 sm:p-16 rounded-3xl bg-gradient-to-br from-[#30391c] to-[#1a1a1a]
+                               text-center shadow-[0_18px_50px_rgba(0,0,0,0.6)] border border-[#3b4a28]">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#539600]">
                 Ready to transform your finances?
               </h2>
@@ -225,12 +200,8 @@ const Index = () => {
                 SpendBuddy makes budgeting simple, powerful, and stress-free.
               </p>
 
-              <Button
-                size="lg"
-                asChild
-                className="bg-white text-[#376400] hover:bg-white/90 rounded-full px-8 py-5"
-              >
-                <Link to="/dashboard" className= "flex items-center gap-2 ">
+              <Button size="lg" asChild className="bg-white text-[#376400] hover:bg-white/90 rounded-full px-8 py-5">
+                <Link to="/dashboard" className="flex items-center gap-2">
                   Get Started Now
                   <ArrowRight className="h-5 w-5 text-[#376400]" />
                 </Link>
@@ -239,8 +210,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* =============== FOOTER =============== */}
-        <footer className="bg-[#1a1a1a] py-12 border-t border-[#141414]">
+        {/* FOOTER */}
+        <footer className="bg-[#161513] py-12 border-t border-[#141414]">
           <div className="text-center text-gray-400">
             <p>© 2024 SpendBuddy. All rights reserved.</p>
             <p className="text-sm mt-1">Made with ❤ for better financial wellness</p>

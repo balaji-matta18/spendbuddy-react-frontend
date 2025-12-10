@@ -79,7 +79,17 @@ const Index = () => {
         <Navbar />
 
         {/* HERO SECTION – fully restored, no visual change */}
-        <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24">
+        {/* <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24"> */}
+
+        {/* HERO SECTION – fully restored, no visual change except mobile height fix */}
+<section
+  className="
+    min-h-[100svh]     /* Mobile safe height */
+    md:min-h-screen    /* Desktop original height */
+    flex flex-col justify-center items-center text-center px-6 pt-24
+  "
+>
+
           <div className="w-full max-w-6xl mx-auto">
 
             {/* Desktop: NO WRAP. Mobile: wrap allowed. */}

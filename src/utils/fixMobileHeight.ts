@@ -1,9 +1,16 @@
 export function fixMobileHeight() {
-  const set = () => {
-    const vh = window.innerHeight * 0.01;
+  const setHeight = () => {
+    let height = window.innerHeight;
+
+    // Nokia G-series / faulty WebView fix
+    if (navigator.userAgent.toLowerCase().includes("nokia")) {
+      height = screen.height; // screen.height is stable on Nokia
+    }
+
+    const vh = height * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   };
 
-  set();
-  window.addEventListener("resize", set);
+  setHeight();
+  window.addEventListener("resize", setHeight);
 }

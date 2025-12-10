@@ -148,3 +148,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix for devices that add extra top padding (Nokia, some Motorolas, older Samsung WebView) */
+.hero-fix {
+  padding-top: max(0px, env(safe-area-inset-top));
+}

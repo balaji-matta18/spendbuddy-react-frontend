@@ -82,13 +82,13 @@ const Index = () => {
         {/* <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24"> */}
 
         {/* HERO SECTION – fully restored, no visual change except mobile height fix */}
-<section
-  className="
-    min-h-[calc(var(--vh,1vh)*100)]   
-    md:min-h-screen   
-    flex flex-col justify-center items-center text-center px-6 pt-24
-  "
->
+          <section
+            className="
+              min-h-[calc(var(--vh,1vh)*100)]   
+              md:min-h-screen   
+              flex flex-col justify-center items-center text-center px-6 pt-24
+            "
+          >
 
           <div className="w-full max-w-6xl mx-auto">
 

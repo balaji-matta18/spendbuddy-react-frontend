@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+// src/pages/Auth.tsx
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,9 +13,11 @@ const Auth = () => {
   const { isAuthenticated, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  // ✅ If already logged in, redirect to dashboard
+  // Redirect if logged in
   useEffect(() => {
-    if (isAuthenticated) navigate("/dashboard", { replace: true });
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
   }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,9 +26,13 @@ const Auth = () => {
     try {
       if (isSignup) {
         await signUp({ username, email, password });
+        toast.success("Account created successfully. You are now signed in.");
       } else {
         await signIn({ email, password });
+        toast.success("Signed in successfully.");
       }
+
+      navigate("/dashboard");
     } catch (err) {
       console.error("Auth error:", err);
       toast.error("Something went wrong. Please try again.");
@@ -33,88 +40,90 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md p-8 border border-border rounded-xl shadow-sm bg-card">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          {isSignup ? "Create Account" : "Sign In"}
-        </h1>
+    <div className="min-h-screen bg-[#1a1a1a] text-white flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {isSignup && (
+        {/* Card */}
+        <div className="rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl p-8 sm:p-10">
+
+          {/* Title moved inside card */}
+          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
+            {isSignup ? "Create Account" : "Welcome back"}
+          </h1>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {isSignup && (
+              <div>
+                <label className="text-sm font-medium text-gray-200 block mb-1">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full rounded-xl border border-[#383838] bg-[#1a1a1a] px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#539600] focus:ring-2 focus:ring-[#539600]/50 transition"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+            )}
+
             <div>
-              <label className="text-sm font-medium text-foreground block mb-1">
-                Username
+              <label className="text-sm font-medium text-gray-200 block mb-1">
+                Email
               </label>
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full border border-border rounded-lg p-2"
-                placeholder="John Doe"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-xl border border-[#383838] bg-[#1a1a1a] px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#539600] focus:ring-2 focus:ring-[#539600]/50 transition"
+                placeholder="you@example.com"
                 required
               />
             </div>
-          )}
 
-          <div>
-            <label className="text-sm font-medium text-foreground block mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-border rounded-lg p-2"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+            <div>
+              <label className="text-sm font-medium text-gray-200 block mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-xl border border-[#383838] bg-[#1a1a1a] px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#539600] focus:ring-2 focus:ring-[#539600]/50 transition"
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="text-sm font-medium text-foreground block mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-border rounded-lg p-2"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+            <button
+              type="submit"
+              className="mt-2 w-full rounded-full bg-[#539600] text-[#050608] font-semibold py-3 text-sm sm:text-base hover:bg-[#6bc000] transition shadow-[0_0_25px_rgba(83,150,0,0.35)] flex items-center justify-center gap-2"
+            >
+              {isSignup ? "Create Account" : "Sign In"}
+            </button>
+          </form>
 
-          <button
-            type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-all"
-          >
-            {isSignup ? "Sign Up" : "Sign In"}
-          </button>
-        </form>
-
-        <p className="text-sm text-center text-muted-foreground mt-4">
-          {isSignup ? (
-            <>
-              Already have an account?{" "}
+          {/* Switch between Sign In / Sign Up */}
+          <p className="mt-6 text-center text-sm text-gray-400">
+            {isSignup ? "Already have an account?" : "New to SpendBuddy?"}{" "}
+            {isSignup ? (
               <span
-                className="text-primary cursor-pointer hover:underline"
+                className="font-semibold text-[#daf180] cursor-pointer hover:underline"
                 onClick={() => setIsSignup(false)}
               >
-                Sign In
+                Sign in
               </span>
-            </>
-          ) : (
-            <>
-              Don’t have an account?{" "}
+            ) : (
               <span
-                className="text-primary cursor-pointer hover:underline"
+                className="font-semibold text-[#daf180] cursor-pointer hover:underline"
                 onClick={() => setIsSignup(true)}
               >
-                Sign Up
+                Sign up
               </span>
-            </>
-          )}
-        </p>
+            )}
+          </p>
+        </div>
       </div>
     </div>
   );

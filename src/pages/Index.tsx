@@ -84,8 +84,8 @@ const Index = () => {
         {/* HERO SECTION – fully restored, no visual change except mobile height fix */}
 <section
   className="
-    min-h-[100svh]     /* Mobile safe height */
-    md:min-h-screen    /* Desktop original height */
+    min-h-[calc(var(--vh,1vh)*100)]   
+    md:min-h-screen   
     flex flex-col justify-center items-center text-center px-6 pt-24
   "
 >

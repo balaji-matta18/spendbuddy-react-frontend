@@ -22,7 +22,7 @@ export const BudgetOverview = () => {
 
   // NEW: 3-color progress bar logic
   const getProgressColor = (percent: number) => {
-    if (percent >= 100) return "bg-[#ff4d4d]";     // Red
+    if (percent >= 100) return "bg-[#FF5C5C]";     // Red
     if (percent >= 67) return "bg-[#ff9f43]";      // Orange
     if (percent >= 34) return "bg-[#f7c948]";      // Amber
     return "bg-[#4da6ff]";                         // Blue (start)
@@ -49,6 +49,8 @@ export const BudgetOverview = () => {
 
   return (
     <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl animate-fade-in">
+        {/* <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-[#242424]"> */}
+
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">Budget Overview</h2>
         <p className="text-sm text-gray-400">Track your spending by category</p>

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import axiosInstance from "@/api/axiosInstance";  // ✅ USE CENTRAL AXIOS
+import axiosInstance from "@/api/axiosInstance";
 import {
   Plus,
   Filter,
@@ -33,8 +33,10 @@ import {
   Zap,
 } from "lucide-react";
 
+// --------------------------------------------------
+
 const Expenses = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [expenses, setExpenses] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,9 +72,10 @@ const Expenses = () => {
   const safeValue = (v: any) =>
     v === null || v === undefined || v === "" ? "__none__" : String(v);
 
-  /** ---------------------------------------
-   * FETCH BASE DATA
-   * -------------------------------------- */
+  // --------------------------------------------------
+  // FETCH DATA
+  // --------------------------------------------------
+
   const fetchData = async (filterParams = {}) => {
     try {
       setIsLoading(true);
@@ -100,18 +103,24 @@ const Expenses = () => {
     fetchData();
   }, []);
 
-  /** ---------------------------------------
-   * LOAD SUBCATEGORIES
-   * -------------------------------------- */
+  // --------------------------------------------------
+  // SUBCATEGORY FETCH
+  // --------------------------------------------------
+
   const fetchSubcategories = async (budgetId: number, type: "modal" | "filter") => {
     try {
       const res = await axiosInstance.get(`/subcategory?budgetId=${budgetId}`);
-      if (type === "modal") setSubcategories(res.data || []);
-      else setFilterSubcategories(res.data || []);
+      type === "modal"
+        ? setSubcategories(res.data || [])
+        : setFilterSubcategories(res.data || []);
     } catch {
       type === "modal" ? setSubcategories([]) : setFilterSubcategories([]);
     }
   };
+
+  // --------------------------------------------------
+  // INPUT HANDLERS
+  // --------------------------------------------------
 
   const handleInputChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -121,6 +130,7 @@ const Expenses = () => {
     setFilters({ ...filters, [field]: value });
   };
 
+  // Category change (modal)
   const handleCategoryChange = (value: string) => {
     if (value === "__none__") value = "";
     setForm({ ...form, category: value, subcategory: "" });
@@ -133,6 +143,7 @@ const Expenses = () => {
     else setSubcategories([]);
   };
 
+  // Filter category change
   const handleFilterCategoryChange = (value: string) => {
     if (value === "__none__") value = "";
     setFilters({ ...filters, category: value, subcategory: "" });
@@ -145,9 +156,10 @@ const Expenses = () => {
     else setFilterSubcategories([]);
   };
 
-  /** ---------------------------------------
-   * APPLY FILTERS
-   * -------------------------------------- */
+  // --------------------------------------------------
+  // APPLY FILTERS
+  // --------------------------------------------------
+
   const handleApplyFilters = async () => {
     const selectedCat = categories.find(
       (c) => (c.category ?? c.categoryName) === filters.category
@@ -163,8 +175,8 @@ const Expenses = () => {
     if (filters.startDate) params.startDate = filters.startDate;
     if (filters.endDate) params.endDate = filters.endDate;
 
-    toast.info("Applying filters...");
     try {
+      toast.info("Applying filters...");
       const res = await axiosInstance.get("/expense/filter", { params });
       setExpenses(res.data || []);
       toast.success("Filters applied");
@@ -174,8 +186,8 @@ const Expenses = () => {
   };
 
   const handleCurrentMonth = async () => {
-    toast.info("Loading current month expenses...");
     try {
+      toast.info("Loading current month expenses...");
       const res = await axiosInstance.get("/expense/current-month");
       setExpenses(res.data || []);
       toast.success("Showing current month expenses");
@@ -197,13 +209,14 @@ const Expenses = () => {
     toast.success("Filters cleared");
   };
 
-  /** ---------------------------------------
-   * CREATE / UPDATE EXPENSE
-   * -------------------------------------- */
+  // --------------------------------------------------
+  // SAVE EXPENSE
+  // --------------------------------------------------
+
   const handleSaveExpense = async () => {
     if (!isDataReady)
       return toast.warning(
-        "Please add Categories, Subcategories, and Payment Types first!"
+        "Please add Categories, Subcategories and Payment Types first!"
       );
 
     if (!form.description || !form.amount || !form.category || !form.paymentType)
@@ -246,9 +259,10 @@ const Expenses = () => {
     }
   };
 
-  /** ---------------------------------------
-   * EDIT EXPENSE
-   * -------------------------------------- */
+  // --------------------------------------------------
+  // EDIT EXPENSE
+  // --------------------------------------------------
+
   const handleEditExpense = (expense: any) => {
     setEditMode(true);
     setEditingId(expense.id);
@@ -272,9 +286,10 @@ const Expenses = () => {
     setIsModalOpen(true);
   };
 
-  /** ---------------------------------------
-   * DELETE EXPENSE
-   * -------------------------------------- */
+  // --------------------------------------------------
+  // DELETE
+  // --------------------------------------------------
+
   const handleDeleteExpense = (id: number) => {
     setDeleteTarget(id);
     setDeleteConfirm(true);
@@ -282,6 +297,7 @@ const Expenses = () => {
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
+
     try {
       await axiosInstance.delete(`/expense/${deleteTarget}`);
       toast.success("Expense deleted");
@@ -292,40 +308,46 @@ const Expenses = () => {
     }
   };
 
+  // --------------------------------------------------
+  // RENDER
+  // --------------------------------------------------
+
   return (
-    <div className="min-h-screen bg-background">
+    // <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#1a1a1a] pt-28">
+
       <Navbar />
+
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         {/* HEADER */}
         <div className="mb-8 flex items-center justify-between animate-fade-in">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
               Expense Management
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-400">
               Track, add, edit, delete, and filter your expenses easily.
             </p>
           </div>
-          <Button
-            className="gap-2"
+
+          <Button className="gap-2 bg-[#539600] hover:bg-[#6ec800] text-black shadow-[0_0_15px_rgba(83,150,0,0.45)]"
             onClick={() => {
               setIsModalOpen(true);
               setEditMode(false);
               setEditingId(null);
             }}
           >
-            <Plus className="h-4 w-4" /> Add Expense
+            <Plus className="h-4 w-4" />
+            Add Expense
           </Button>
         </div>
 
-        {/* 🔍 FILTER SECTION (unchanged UI, cleaned API) */}
-        {/* ...existing filter JSX stays identical... */}
-        {/* Filters Section */}
+        {/* FILTER TOGGLE */}
         <div className="flex items-center justify-between mb-6">
           <Button
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 border-gray-700 text-black hover:bg-white"
             onClick={() => setFiltersOpen(!filtersOpen)}
           >
             <Filter className="h-4 w-4" />
@@ -333,17 +355,21 @@ const Expenses = () => {
           </Button>
         </div>
 
+        {/* FILTERS */}
         {filtersOpen && (
-          <Card className="p-6 mb-8 bg-muted/30 rounded-xl border border-border animate-fade-in">
+          <Card className="p-6 mb-8 rounded-2xl bg-gradient-to-br from-[#2b3320] to-[#161616] border border-[#2c2c2c] text-gray-200">
             <div className="space-y-6">
-              {/* Category/Subcategory/PaymentType Filters */}
+
+              {/* TYPE FILTERS */}
               <div>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-3 border-b pb-1">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-1">
                   Expense Type Filters
                 </h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
                   <Select onValueChange={handleFilterCategoryChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-[#1d1d1d] border-gray-700 text-gray-200">
                       <SelectValue placeholder="Select Category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -360,7 +386,7 @@ const Expenses = () => {
                   </Select>
 
                   <Select onValueChange={(val) => handleFilterChange("subcategory", val)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-[#1d1d1d] border-gray-700 text-gray-200">
                       <SelectValue placeholder="Select Subcategory" />
                     </SelectTrigger>
                     <SelectContent>
@@ -377,7 +403,7 @@ const Expenses = () => {
                   </Select>
 
                   <Select onValueChange={(val) => handleFilterChange("paymentType", val)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-[#1d1d1d] border-gray-700 text-gray-200">
                       <SelectValue placeholder="Select Payment Type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -392,47 +418,69 @@ const Expenses = () => {
                       ))}
                     </SelectContent>
                   </Select>
+
                 </div>
               </div>
 
-              {/* Date Filters */}
+              {/* DATE FILTERS */}
               <div>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-3 border-b pb-1">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-1">
                   Date Filters
                 </h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Input
                     type="date"
+                    className="bg-[#1d1d1d] border-gray-700 text-gray-200"
                     value={filters.startDate}
                     onChange={(e) => handleFilterChange("startDate", e.target.value)}
                   />
                   <Input
                     type="date"
+                    className="bg-[#1d1d1d] border-gray-700 text-gray-200"
                     value={filters.endDate}
                     onChange={(e) => handleFilterChange("endDate", e.target.value)}
                   />
                 </div>
               </div>
 
-              {/* Quick Actions */}
+              {/* QUICK ACTIONS */}
               <div>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-3 border-b pb-1">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-1">
                   ⚡ Quick Actions
                 </h3>
+
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="secondary" onClick={handleCurrentMonth}>
-                      <Zap className="h-4 w-4 mr-2" /> Current Month
+                    <Button
+                      variant="secondary"
+                      className="bg-[#2f5c20] text-[#baff8f] hover:bg-[#3d7a28]"
+                      onClick={handleCurrentMonth}
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      Current Month
                     </Button>
-                    <Button variant="outline" onClick={handleClearFilters}>
-                      <XCircle className="h-4 w-4 mr-2" /> Clear Filters
+
+                    <Button
+                      variant="outline"
+                      className="border-gray-700 text-black hover:bg-white"
+                      onClick={handleClearFilters}
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Clear Filters
                     </Button>
                   </div>
-                  <Button className="gap-2" onClick={handleApplyFilters}>
-                    <Filter className="h-4 w-4" /> Apply Filters
+
+                  <Button
+                    className="gap-2 bg-[#539600] hover:bg-[#6ec800] text-black shadow-[0_0_15px_rgba(83,150,0,0.45)]"
+                    onClick={handleApplyFilters}
+                  >
+                    <Filter className="h-4 w-4" />
+                    Apply Filters
                   </Button>
                 </div>
               </div>
+
             </div>
           </Card>
         )}
@@ -441,47 +489,81 @@ const Expenses = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 w-full rounded-lg" />
+              <Skeleton key={i} className="h-24 w-full rounded-xl bg-[#1d1d1d]" />
             ))
           ) : expenses.length === 0 ? (
-            <p className="text-center text-muted-foreground col-span-full">
-              No expenses found. Add one to get started.
+            <p className="col-span-full text-center text-gray-400">
+              No expenses found.
             </p>
           ) : (
             expenses.map((exp, i) => (
               <Card
                 key={i}
-                className="p-5 relative hover:shadow-sm transition-all duration-200 border border-border"
+                className="
+                  p-5 rounded-2xl border border-[#2c2c2c]
+                  bg-gradient-to-br from-[#2b3320] to-[#161616]
+                  shadow-[0_0_15px_rgba(0,0,0,0.35)]
+                  hover:shadow-[0_0_25px_rgba(83,150,0,0.35)]
+                  transition-all duration-300 cursor-pointer animate-fade-in
+                "
+                style={{ animationDelay: `${i * 60}ms` }}
               >
                 <div className="flex justify-between items-start mb-3">
+                  {/* LEFT */}
                   <div>
-                    <p className="font-semibold text-foreground">
+                    <p className="font-semibold text-white text-lg">
                       {exp.description ?? exp.expenseDescription}
                     </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {exp.category} • {exp.subCategory} • {exp.paymentType}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+
+                    {/* Category pills */}
+                    <div className="flex items-center gap-2 mt-2">
+                      {exp.category && (
+                        <span className="px-2 py-1 rounded-full text-xs bg-[#3b3b3b] text-gray-200">
+                          {exp.category}
+                        </span>
+                      )}
+                      {exp.subCategory && (
+                        <span className="px-2 py-1 rounded-full text-xs bg-[#3b3b3b] text-gray-200">
+                          {exp.subCategory}
+                        </span>
+                      )}
+                      {exp.paymentType && (
+                        <span className="px-2 py-1 rounded-full text-xs bg-[#3b3b3b] text-gray-200">
+                          {exp.paymentType}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-gray-400 mt-2">
                       {exp.expenseDate
                         ? new Date(exp.expenseDate).toLocaleDateString()
                         : ""}
                     </p>
                   </div>
 
-                  <div className="flex flex-col items-end gap-2">
-                    <p className="font-bold text-primary text-lg">
+                  {/* RIGHT */}
+                  <div className="flex flex-col items-end gap-3">
+                    <p className="font-bold text-[#b3ff8c] text-xl">
                       ₹{exp.amount?.toLocaleString("en-IN")}
                     </p>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => handleEditExpense(exp)}>
-                        <Pencil className="h-4 w-4 text-primary" />
-                      </Button>
+
+                    <div className="flex gap-2">
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="hover:bg-[#2a2a2a] rounded-full"
+                        onClick={() => handleEditExpense(exp)}
+                      >
+                        <Pencil className="h-4 w-4 text-white" />
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-[#2a2a2a] rounded-full"
                         onClick={() => handleDeleteExpense(exp.id)}
                       >
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                        <Trash2 className="h-4 w-4 text-red-400" />
                       </Button>
                     </div>
                   </div>
@@ -492,74 +574,66 @@ const Expenses = () => {
         </div>
       </main>
 
-      {/* ADD / EDIT MODAL */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md rounded-2xl border border-border bg-white shadow-lg">
+      {/* DELETE CONFIRMATION */}
+      <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
+        <DialogContent className="max-w-sm bg-[#1a1a1a] border border-gray-700 rounded-xl text-gray-200">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
+            <div className="flex items-center gap-2 text-red-400">
+              <AlertTriangle className="h-5 w-5" />
+              <DialogTitle>Delete Expense?</DialogTitle>
+            </div>
+          </DialogHeader>
+          <p className="text-sm text-gray-400 mt-2">
+            This action cannot be undone.
+          </p>
+
+          <DialogFooter className="mt-6 flex justify-end gap-2">
+            <Button
+              variant="outline"
+              className="border-gray-700 text-black hover:bg-white"
+              onClick={() => setDeleteConfirm(false)}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="destructive"
+              className="bg-red-600 hover:bg-red-700"
+              onClick={confirmDelete}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md rounded-2xl bg-[#1c1c1c] border border-gray-700 text-gray-200 shadow-2xl">
+
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-white">
               {editMode ? "Edit Expense" : "Add New Expense"}
             </DialogTitle>
           </DialogHeader>
 
-          {/* ⚠️ Setup warning */}
+          {/* VALIDATION MESSAGE */}
           {!isDataReady && !editMode && (
-            <div className="py-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="font-medium text-amber-900 mb-3">
-                  ⚠️ Before adding an expense, please set up the following:
-                </p>
-                <div className="space-y-2">
-                  {categories.length === 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-amber-800">No Categories</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate("/budgets")}
-                      >
-                        Go to Budgets
-                      </Button>
-                    </div>
-                  )}
-                  {subcategories.length === 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-amber-800">No Subcategories</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate("/subcategories")}
-                      >
-                        Go to Subcategories
-                      </Button>
-                    </div>
-                  )}
-                  {paymentTypes.length === 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-amber-800">No Payment Types</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate("/payment-types")}
-                      >
-                        Go to Payment Types
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
+            <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 text-yellow-300 text-sm">
+              Please configure Categories, Subcategories and Payment Types first.
             </div>
           )}
 
-          {/* FORM CONTENT */}
           {(isDataReady || editMode) && (
             <div className="space-y-4 mt-4">
+
               <div>
                 <Label>Description</Label>
                 <Input
                   name="description"
                   value={form.description}
                   onChange={handleInputChange}
-                  placeholder="e.g. Dinner at Paradise"
+                  className="bg-[#262626] border-gray-700 text-white"
                 />
               </div>
 
@@ -570,19 +644,29 @@ const Expenses = () => {
                   type="number"
                   value={form.amount}
                   onChange={handleInputChange}
-                  placeholder="e.g. 700"
+                  className="bg-[#262626] border-gray-700 text-white"
                 />
               </div>
 
               <div>
                 <Label>Date</Label>
-                <Input name="date" type="date" value={form.date} onChange={handleInputChange} />
+                <Input
+                  name="date"
+                  type="date"
+                  value={form.date}
+                  onChange={handleInputChange}
+                  className="bg-[#262626] border-gray-700 text-white"
+                />
               </div>
 
               <div>
                 <Label>Category</Label>
-                <Select onValueChange={handleCategoryChange} value={form.category} disabled={editMode}>
-                  <SelectTrigger>
+                <Select
+                  onValueChange={handleCategoryChange}
+                  value={form.category}
+                  disabled={editMode}
+                >
+                  <SelectTrigger className="bg-[#262626] border-gray-700 text-white">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -603,7 +687,7 @@ const Expenses = () => {
                   value={form.subcategory}
                   disabled={editMode}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-[#262626] border-gray-700 text-white">
                     <SelectValue placeholder="Select Subcategory" />
                   </SelectTrigger>
                   <SelectContent>
@@ -623,7 +707,7 @@ const Expenses = () => {
                   onValueChange={(val) => setForm({ ...form, paymentType: val })}
                   value={form.paymentType}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-[#262626] border-gray-700 text-white">
                     <SelectValue placeholder="Select Payment Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -636,39 +720,27 @@ const Expenses = () => {
                   </SelectContent>
                 </Select>
               </div>
+
             </div>
           )}
 
           <DialogFooter className="mt-6 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+            <Button
+              variant="outline"
+              className="border-gray-700 text-black hover:bg-white"
+              onClick={() => setIsModalOpen(false)}
+            >
               Cancel
             </Button>
-            {(isDataReady || editMode) && (
-              <Button onClick={handleSaveExpense}>{editMode ? "Update" : "Save"}</Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* DELETE CONFIRMATION */}
-      <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <div className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="h-5 w-5" />
-              <DialogTitle>Delete Expense?</DialogTitle>
-            </div>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground mt-2">
-            Are you sure you want to permanently delete this expense? This action cannot be undone.
-          </p>
-          <DialogFooter className="mt-6 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setDeleteConfirm(false)}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete
-            </Button>
+            {(isDataReady || editMode) && (
+              <Button
+                className="bg-[#70b300] hover:bg-[#89d600] text-black shadow-[0_0_15px_rgba(83,150,0,0.45)]"
+                onClick={handleSaveExpense}
+              >
+                {editMode ? "Update" : "Save"}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

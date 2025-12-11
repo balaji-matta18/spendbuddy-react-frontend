@@ -32,7 +32,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import axiosInstance from "@/api/axiosInstance"; // ✅ Central API client
+import axiosInstance from "@/api/axiosInstance";
 
 interface Budget {
   id?: number;
@@ -76,7 +76,15 @@ const Budgets = () => {
 
   const getCurrentMonth = (): string => makeYm(new Date());
 
-  // ✅ Fetch budgets for current month
+  // 🎨 Progress bar colour logic (same as Dashboard)
+const getBudgetBarColor = (percent: number) => {
+  if (percent >= 100) return "bg-[#ff4d4d]";     // Red - overspent
+  if (percent >= 67) return "bg-[#ff9f43]";      // Orange - high usage
+  if (percent >= 34) return "bg-[#f7c948]";      // Amber - medium usage
+  return "bg-[#4da6ff]";                         // Blue - low usage
+};
+
+
   const fetchBudgets = async () => {
     try {
       const [allRes, summaryRes] = await Promise.all([
@@ -97,14 +105,12 @@ const Budgets = () => {
 
       setBudgets(enriched);
     } catch (error: any) {
-      console.error("Error fetching budgets:", error);
       toast.error(error.response?.data?.message || "Failed to load budgets.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ✅ Check rollover visibility
   const checkRolloverVisibility = async () => {
     try {
       const userRes = await axiosInstance.get("/user/me");
@@ -116,22 +122,13 @@ const Budgets = () => {
         return;
       }
 
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 4000);
-
       const currentMonth = getCurrentMonth();
       const prevMonth = getPreviousMonth();
 
       const [currentRes, prevRes] = await Promise.allSettled([
-        axiosInstance.get(`/budget/all?month=${currentMonth}`, {
-          signal: controller.signal,
-        }),
-        axiosInstance.get(`/budget/all?month=${prevMonth}`, {
-          signal: controller.signal,
-        }),
+        axiosInstance.get(`/budget/all?month=${currentMonth}`),
+        axiosInstance.get(`/budget/all?month=${prevMonth}`),
       ]);
-
-      clearTimeout(timeout);
 
       const currentCount =
         currentRes.status === "fulfilled" ? currentRes.value.data.length : 0;
@@ -139,25 +136,22 @@ const Budgets = () => {
         prevRes.status === "fulfilled" ? prevRes.value.data.length : 0;
 
       setShowRollover(currentCount === 0 && prevCount > 0);
-    } catch (error: any) {
-      console.error("Error checking rollover visibility:", error.message);
+    } catch {
       setShowRollover(false);
     }
   };
 
-  // ✅ Init logic
   useEffect(() => {
     const init = async () => {
       try {
+        const today = new Date().getDate();
         const userRes = await axiosInstance.get("/user/me");
         const monthStartDay = userRes.data.monthStartDay || 1;
-        const today = new Date().getDate();
-        const currentMonth = getCurrentMonth();
 
+        const currentMonth = getCurrentMonth();
         const currentBudgetsRes = await axiosInstance.get(
           `/budget/all?month=${currentMonth}`
         );
-
         const hasCurrentBudgets =
           currentBudgetsRes.data && currentBudgetsRes.data.length > 0;
 
@@ -168,17 +162,9 @@ const Budgets = () => {
           return;
         }
 
-        if (today === monthStartDay && hasCurrentBudgets) {
-          setBudgets(currentBudgetsRes.data);
-          setShowRollover(false);
-          setIsLoading(false);
-          return;
-        }
-
         await fetchBudgets();
         await checkRolloverVisibility();
-      } catch (err) {
-        console.error("Error during budget init:", err);
+      } catch {
         setIsLoading(false);
       }
     };
@@ -186,28 +172,22 @@ const Budgets = () => {
     init();
   }, []);
 
-  // ✅ Manual rollover
   const handleRollover = async () => {
-    const confirmCopy = window.confirm(
-      "Do you want to copy last month's budgets into this month?"
-    );
-    if (!confirmCopy) return toast.info("Rollover cancelled.");
+    if (!window.confirm("Copy last month's budgets into this month?")) return;
 
     try {
-      await axiosInstance.post("/budget/rollover", {});
-      toast.success("Budgets rolled over successfully!");
+      await axiosInstance.post("/budget/rollover");
+      toast.success("Budgets rolled over!");
       setShowRollover(false);
       fetchBudgets();
-    } catch (error: any) {
-      console.error("Error during rollover:", error);
-      toast.error(error.response?.data?.message || "Failed to rollover budgets.");
+    } catch {
+      toast.error("Failed to rollover.");
     }
   };
 
-  // ✅ Add / Update / Delete logic
   const handleSaveBudget = async () => {
     if (!newCategory || !newBudget) {
-      toast.error("Please fill in all fields.");
+      toast.error("Please fill all fields.");
       return;
     }
 
@@ -231,9 +211,8 @@ const Budgets = () => {
       setEditMode(false);
       setEditingId(null);
       fetchBudgets();
-    } catch (error: any) {
-      console.error("Error saving budget:", error);
-      toast.error(error.response?.data?.message || "Failed to save budget.");
+    } catch {
+      toast.error("Failed to save budget.");
     }
   };
 
@@ -242,9 +221,8 @@ const Budgets = () => {
       await axiosInstance.delete(`/budget/${id}`);
       toast.success("Budget deleted!");
       fetchBudgets();
-    } catch (error: any) {
-      console.error("Error deleting budget:", error);
-      toast.error(error.response?.data?.message || "Failed to delete budget.");
+    } catch {
+      toast.error("Failed to delete.");
     }
   };
 
@@ -265,95 +243,111 @@ const Budgets = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#1a1a1a]">
       <Navbar />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 flex items-center justify-between animate-fade-in">
+
+      {/* here we change distance between navbar and page */}
+
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-36">
+
+        {/* HEADER */}
+        <div className="mb-10 flex items-center justify-between animate-fade-in">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
               Budget Management
             </h1>
             <p className="text-muted-foreground">
-              Track and manage your spending across categories
+              Track and manage category-wise budgets
             </p>
           </div>
 
           <div className="flex gap-2">
             {showRollover && (
-              <Button variant="outline" onClick={handleRollover}>
+              <Button
+                variant="outline"
+                className="border-lime-500 text-lime-400 hover:bg-lime-500/20"
+                onClick={handleRollover}
+              >
                 <RefreshCcw className="h-4 w-4 mr-2" />
                 Rollover Budgets
               </Button>
             )}
-            <Button className="gap-2" onClick={openAddModal}>
+
+            <Button
+              className="gap-2 bg-[#539600] hover:bg-[#6bc000] text-black shadow-[0_0_18px_rgba(83,150,0,0.4)]"
+              onClick={openAddModal}
+            >
               <Plus className="h-4 w-4" />
               Add Budget
             </Button>
           </div>
         </div>
 
-        {/* Add/Edit Modal */}
+        {/* MODAL */}
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md rounded-xl bg-[#111] border border-[#333]">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="text-white">
                 {editMode ? "Edit Budget Amount" : "Add New Budget"}
               </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4 mt-4">
               <div>
-                <Label htmlFor="category">Category</Label>
+                <Label className="text-gray-300">Category</Label>
                 <Input
-                  id="category"
+                  className="bg-[#1b1b1b] text-white border-[#333]"
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  placeholder="e.g. Groceries"
+                  placeholder="e.g. Food"
                   disabled={editMode}
                 />
               </div>
 
               <div>
-                <Label htmlFor="amount">Budget Amount</Label>
+                <Label className="text-gray-300">Budget Amount</Label>
                 <Input
-                  id="amount"
+                  className="bg-[#1b1b1b] text-white border-[#333]"
                   type="number"
-                  placeholder="e.g. 500"
                   value={newBudget}
                   onChange={(e) => setNewBudget(e.target.value)}
+                  placeholder="e.g. 1500"
                 />
               </div>
             </div>
 
-            <DialogFooter className="mt-6 flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+            <DialogFooter className="mt-6">
+              <Button
+                variant="outline"
+                className="border-gray-500 text-black hover:bg-white"
+                onClick={() => setIsModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSaveBudget}>
+
+              <Button
+                className="bg-[#539600] hover:bg-[#6bc000] text-black shadow-[0_0_18px_rgba(83,150,0,0.4)]"
+                onClick={handleSaveBudget}
+              >
                 {editMode ? "Update" : "Save"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* Budget Cards */}
+        {/* BUDGET CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardHeader>
-                  <Skeleton className="h-6 w-32" />
-                  <Skeleton className="h-4 w-48 mt-2" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-8 w-full mt-4" />
-                </CardContent>
+              <Card key={i} className="bg-[#111] border-[#333] p-6">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-4 w-48 mt-2" />
+                <Skeleton className="h-4 w-full mt-6" />
               </Card>
             ))
           ) : budgets.length === 0 ? (
-            <p className="text-center text-muted-foreground col-span-full">
-              No budgets found. Start by adding one.
+            <p className="text-center text-gray-400 col-span-full">
+              No budgets found. Add one to begin.
             </p>
           ) : (
             budgets.map((budget, index) => {
@@ -365,18 +359,17 @@ const Budgets = () => {
               return (
                 <Card
                   key={budget.id || index}
-                  className="hover:shadow-lg transition-shadow animate-fade-in"
-                  style={{ animationDelay: `${index * 80}ms` }}
+                  className="bg-gradient-to-b from-[#1f2515] to-[#0f1109] border border-[#2d3820] rounded-xl shadow-lg hover:shadow-xl transition-all animate-fade-in"
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
                   <CardHeader>
-                    <div className="flex items-start justify-between">
+                    <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-xl capitalize">
+                        <CardTitle className="text-white text-xl capitalize">
                           {budget.category}
                         </CardTitle>
-                        <CardDescription className="mt-2">
-                          {formatRupees(spent)} of{" "}
-                          {formatRupees(budget.budgetAmount)}
+                        <CardDescription className="text-gray-400 mt-1">
+                          {formatRupees(spent)} of {formatRupees(budget.budgetAmount)}
                         </CardDescription>
                       </div>
 
@@ -386,28 +379,35 @@ const Budgets = () => {
                           size="icon"
                           onClick={() => openEditModal(budget)}
                         >
-                          <Pencil className="h-4 w-4 text-primary" />
+                          <Pencil className="h-4 w-4 text-lime-400" />
                         </Button>
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button variant="ghost" size="icon">
-                              <Trash2 className="h-4 w-4 text-destructive" />
+                              <Trash2 className="h-4 w-4 text-red-400" />
                             </Button>
                           </AlertDialogTrigger>
-                          <AlertDialogContent>
+
+                          {/* <AlertDialogContent className="bg-[#111] border-[#333]"> */}
+                          <AlertDialogContent className="max-w-sm w-[90%] rounded-2xl p-6 bg-[#121212] border border-[#2a2a2a]">
+
                             <AlertDialogHeader>
-                              <AlertDialogTitle>
+                              <AlertDialogTitle className="text-white">
                                 Delete{" "}
-                                <span className="font-semibold">
+                                <span className="font-semibold text-red-400">
                                   {budget.category}
                                 </span>
                                 ?
                               </AlertDialogTitle>
                             </AlertDialogHeader>
+
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogCancel className="text-black border-gray-600">
+                                Cancel
+                              </AlertDialogCancel>
                               <AlertDialogAction
+                                className="bg-red-500 hover:bg-red-600"
                                 onClick={() =>
                                   handleDeleteBudget(budget.id as number)
                                 }
@@ -424,13 +424,20 @@ const Budgets = () => {
                   <CardContent>
                     <Progress
                       value={displayValue}
-                      className="mb-3"
+                      className="h-3 bg-[#242d19] rounded-full mb-3"
+                      // indicatorClassName={cn(
+                      //   "rounded-full transition-all",
+                      //   budget.color
+                      // )}
+
                       indicatorClassName={cn(
-                        "transition-all duration-500 ease-in-out",
-                        budget.color || "bg-primary"
-                      )}
+                      "rounded-full transition-all duration-500",
+                      getBudgetBarColor(percentage)
+                    )}
+
                     />
-                    <p className="text-sm font-medium text-success">
+
+                    <p className="text-sm font-medium text-lime-300">
                       {formatRupees(remaining)} remaining
                     </p>
                   </CardContent>

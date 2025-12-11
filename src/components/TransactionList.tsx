@@ -87,6 +87,8 @@ export const TransactionList = ({
 
   return (
     <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl">
+        {/* <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-[#242424]"> */}
+
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">{title}</h2>
         <p className="text-sm text-gray-400 mt-1">

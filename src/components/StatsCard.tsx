@@ -14,13 +14,11 @@ interface StatsCardProps {
   change?: string;
   icon: LucideIcon;
   trend?: "up" | "down" | "neutral";
-  reverseColor?: boolean; // ✅ for color logic
+  reverseColor?: boolean;
   className?: string;
 }
 
-/**
- * Maps card title → explanation for tooltip
- */
+/** Tooltip text for each card */
 const formulaHints: Record<string, string> = {
   "Total Balance": "💡 Total Balance = Sum of all category budgets",
   "Expenses": "💡 Expenses = Total spent this month across all subcategories",
@@ -37,14 +35,13 @@ export const StatsCard = ({
   reverseColor = false,
   className,
 }: StatsCardProps) => {
-  // Base colors
   const baseTrendColors = {
-    up: "text-success", // green
-    down: "text-destructive", // red
-    neutral: "text-muted-foreground",
+    up: "text-[#6bc000]",           // green
+    down: "text-[#ff5f5f]",         // red
+    neutral: "text-gray-400",
   };
 
-  // Reverse colors for Balance / Savings
+  // Reverse colors for balance/savings
   const trendColors = reverseColor
     ? {
         up: baseTrendColors.down,
@@ -54,7 +51,8 @@ export const StatsCard = ({
     : baseTrendColors;
 
   const tooltipMessage =
-    formulaHints[title] || "💡 This value is calculated based on your activity";
+    formulaHints[title] ||
+    "💡 This value is calculated based on your activity";
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -62,15 +60,19 @@ export const StatsCard = ({
         <TooltipTrigger asChild>
           <Card
             className={cn(
-              "p-6 hover:shadow-medium transition-all duration-300 animate-scale-in cursor-help",
-              "bg-gradient-card border-border/50",
+              "p-6 transition-all duration-300 cursor-help rounded-2xl border border-[#2a2a2a]",
+              "bg-gradient-to-br from-[#30391c] to-[#1a1a1a]",
+              "hover:shadow-[0_0_25px_rgba(83,150,0,0.18)]",
               className
             )}
           >
             <div className="flex items-start justify-between">
               <div className="space-y-2 flex-1">
-                <p className="text-sm font-medium text-muted-foreground">{title}</p>
-                <p className="text-2xl sm:text-3xl font-bold text-foreground">{value}</p>
+                <p className="text-sm font-medium text-gray-300">{title}</p>
+
+                <p className="text-2xl sm:text-3xl font-bold text-white">
+                  {value}
+                </p>
 
                 {change && (
                   <p
@@ -80,22 +82,26 @@ export const StatsCard = ({
                     )}
                   >
                     <span>{change}</span>
-                    <span className="text-xs sm:text-sm font-medium">
+                    <span className="text-xs sm:text-sm text-gray-400">
                       from last month
                     </span>
                   </p>
                 )}
               </div>
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary shadow-soft">
+              {/* Icon container */}
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#539600] shadow-[0_0_15px_rgba(83,150,0,0.35)]">
                 <Icon className="h-6 w-6 text-white" />
               </div>
             </div>
           </Card>
         </TooltipTrigger>
 
-        {/* Tooltip content */}
-        <TooltipContent side="bottom" align="center" className="text-sm max-w-[240px]">
+        <TooltipContent
+          side="bottom"
+          align="center"
+          className="text-sm max-w-[240px] bg-[#111] text-gray-200 border border-[#2a2a2a]"
+        >
           {tooltipMessage}
         </TooltipContent>
       </Tooltip>

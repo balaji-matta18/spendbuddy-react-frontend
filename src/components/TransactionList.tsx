@@ -13,8 +13,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import axiosInstance from "@/api/axiosInstance"; // centralised API client
-import { useNavigate } from "react-router-dom"; // ✅ added
+import axiosInstance from "@/api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 // Category icons
 const categoryIcons: Record<string, any> = {
@@ -27,7 +27,6 @@ const categoryIcons: Record<string, any> = {
   Bills: Home,
 };
 
-// Transaction model
 interface Transaction {
   id: number;
   title: string;
@@ -37,7 +36,6 @@ interface Transaction {
   type: "income" | "expense";
 }
 
-// Props the Dashboard can pass
 interface TransactionListProps {
   recent?: Transaction[];
   loading?: boolean;
@@ -51,7 +49,7 @@ export const TransactionList = ({
 }: TransactionListProps) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(loading);
-  const navigate = useNavigate(); // ✅ added
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (recent && recent.length > 0) {
@@ -88,10 +86,10 @@ export const TransactionList = ({
   }, [recent, loading]);
 
   return (
-    <Card className="p-6 bg-gradient-card border-border/50 animate-fade-in">
+    <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl">
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-foreground">{title}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h2 className="text-xl font-bold text-white">{title}</h2>
+        <p className="text-sm text-gray-400 mt-1">
           Your latest financial activities
         </p>
       </div>
@@ -101,7 +99,7 @@ export const TransactionList = ({
           Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="flex items-center justify-between p-4 rounded-lg border border-border"
+              className="flex items-center justify-between p-4 rounded-xl border border-[#2a2a2a] bg-[#1a1a1a]"
             >
               <div className="flex items-center gap-4 flex-1">
                 <Skeleton className="h-10 w-10 rounded-lg" />
@@ -114,9 +112,7 @@ export const TransactionList = ({
             </div>
           ))
         ) : transactions.length === 0 ? (
-          <p className="text-center text-muted-foreground">
-            No transactions found.
-          </p>
+          <p className="text-center text-gray-400">No transactions found.</p>
         ) : (
           transactions.map((transaction, index) => {
             const IconComponent =
@@ -127,53 +123,55 @@ export const TransactionList = ({
               <div
                 key={transaction.id}
                 className={cn(
-                  "flex items-center justify-between p-4 rounded-lg border border-border",
-                  "hover:bg-muted/50 transition-all duration-200 cursor-pointer",
+                  "flex items-center justify-between p-4 rounded-xl border border-[#2a2a2a]",
+                  "bg-[#1a1a1a] hover:bg-[#3b4a28] transition-all duration-200 cursor-pointer",
                   "animate-slide-in"
                 )}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                {/* Left side */}
+                {/* Left */}
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div
                     className={cn(
-                      "flex h-10 w-10 items-center justify-center rounded-lg shrink-0",
-                      isIncome ? "bg-success/10" : "bg-muted"
+                      "flex h-10 w-10 items-center justify-center rounded-lg",
+                      isIncome
+                        ? "bg-[#3d561a]"
+                        : "bg-[#2a2a2a]"
                     )}
                   >
                     <IconComponent
                       className={cn(
                         "h-5 w-5",
-                        isIncome ? "text-success" : "text-muted-foreground"
+                        isIncome ? "text-[#b3ff8c]" : "text-gray-300"
                       )}
                     />
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium text-foreground truncate">
+                      <p className="font-medium text-white truncate">
                         {transaction.title}
                       </p>
                       <Badge
                         variant="secondary"
-                        className="hidden sm:inline-flex text-xs"
+                        className="hidden sm:inline-flex text-xs bg-[#30391c] text-[#b3ff8c] border border-[#3d561a]"
                       >
                         {transaction.category}
                       </Badge>
                     </div>
 
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-gray-400">
                       {transaction.date}
                     </p>
                   </div>
                 </div>
 
-                {/* Right side */}
+                {/* Right */}
                 <div className="flex items-center gap-2 shrink-0">
                   <p
                     className={cn(
                       "font-bold text-base sm:text-lg",
-                      isIncome ? "text-success" : "text-foreground"
+                      isIncome ? "text-[#b3ff8c]" : "text-white"
                     )}
                   >
                     {isIncome ? "+" : ""}₹
@@ -181,9 +179,9 @@ export const TransactionList = ({
                   </p>
 
                   {isIncome ? (
-                    <ArrowUpRight className="h-4 w-4 text-success" />
+                    <ArrowUpRight className="h-4 w-4 text-[#b3ff8c]" />
                   ) : (
-                    <ArrowDownRight className="h-4 w-4 text-destructive" />
+                    <ArrowDownRight className="h-4 w-4 text-red-400" />
                   )}
                 </div>
               </div>
@@ -192,9 +190,12 @@ export const TransactionList = ({
         )}
       </div>
 
+      {/* View all button */}
       <button
-        onClick={() => navigate("/expenses")} // FIXED
-        className="mt-6 w-full py-3 text-sm font-medium text-primary hover:text-primary-glow transition-colors"
+        onClick={() => navigate("/expenses")}
+        className="mt-6 w-full py-3 text-sm font-medium rounded-full 
+          bg-[#539600] text-[#050608] hover:bg-[#6bc000] 
+          shadow-[0_0_20px_rgba(83,150,0,0.35)] transition"
       >
         View All Transactions
       </button>

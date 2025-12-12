@@ -39,6 +39,7 @@ import autoTable from "jspdf-autotable";
 
 // Matching theme chart palette
 const COLORS = ["#9EFF4D", "#7BE63A", "#5EC234", "#3F9E2E", "#2F6F22"];
+// const COLORS = ["#105d9cff", "#e6683aff", "#c23434ff", "#2e9e95ff", "#6f2222ff"];
 
 const Reports = () => {
   const [categoryData, setCategoryData] = useState<

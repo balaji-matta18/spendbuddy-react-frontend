@@ -86,7 +86,9 @@ export const TransactionList = ({
   }, [recent, loading]);
 
   return (
-    <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl">
+    // <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl">
+     <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#2b3320] to-[#161616] shadow-xl">
+
         {/* <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-[#242424]"> */}
 
       <div className="mb-6">
@@ -196,8 +198,8 @@ export const TransactionList = ({
       <button
         onClick={() => navigate("/expenses")}
         className="mt-6 w-full py-3 text-sm font-medium rounded-full 
-          bg-[#539600] text-[#050608] hover:bg-[#6bc000] 
-          shadow-[0_0_20px_rgba(83,150,0,0.35)] transition"
+          bg-[#376400] text-[#050608] hover:bg-[#6bc000] 
+          "
       >
         View All Transactions
       </button>

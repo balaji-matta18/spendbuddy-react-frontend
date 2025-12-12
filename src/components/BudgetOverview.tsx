@@ -47,9 +47,20 @@ export const BudgetOverview = () => {
     fetchBudgets();
   }, []);
 
+
+  // change Cards BG here
+
   return (
-    <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl animate-fade-in">
-        {/* <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-[#242424]"> */}
+     <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#2b3320] to-[#161616] shadow-xl animate-fade-in">
+{/* 
+        // <Card className="
+        //           p-6 rounded-3xl border border-[#2c2c2c]
+        //           bg-gradient-to-br from-[#2b3320] to-[#161616]
+        //           shadow-[0_0_15px_rgba(0,0,0,0.35)]
+        //           hover:shadow-[0_0_25px_rgba(83,150,0,0.35)]
+        //           transition-all duration-300 cursor-pointer animate-fade-in
+        //         "> */}
+      {/* <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-[#242424]"> */}
 
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">Budget Overview</h2>
@@ -131,8 +142,7 @@ export const BudgetOverview = () => {
       <button
         onClick={() => navigate("/budgets")}
         className="mt-6 w-full py-3 text-sm font-medium rounded-full 
-          bg-[#539600] text-[#050608] hover:bg-[#6bc000]
-          shadow-[0_0_20px_rgba(83,150,0,0.35)] transition"
+          bg-[#376400] text-[#050608] hover:bg-[#6bc000]"
       >
         Manage Budgets
       </button>

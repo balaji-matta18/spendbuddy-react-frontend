@@ -355,11 +355,11 @@ const getBudgetBarColor = (percent: number) => {
               const remaining = budget.budgetAmount - spent;
               const percentage = (spent / (budget.budgetAmount || 1)) * 100;
               const displayValue = Math.min(percentage, 100);
-
+// card color change here
               return (
                 <Card
                   key={budget.id || index}
-                  className="bg-gradient-to-b from-[#1f2515] to-[#0f1109] border border-[#2d3820] rounded-xl shadow-lg hover:shadow-xl transition-all animate-fade-in"
+                  className="bg-gradient-to-b from-[#2b3320] to-[#161616] border border-[#2d3820] rounded-xl shadow-lg hover:shadow-xl transition-all animate-fade-in"
                   style={{ animationDelay: `${index * 60}ms` }}
                 >
                   <CardHeader>

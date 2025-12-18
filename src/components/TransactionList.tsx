@@ -86,10 +86,11 @@ export const TransactionList = ({
   }, [recent, loading]);
 
   return (
-    // <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#30391c] to-[#1a1a1a] shadow-xl">
-     <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#2b3320] to-[#161616] shadow-xl">
 
-        {/* <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-[#242424]"> */}
+    //  <Card className="p-6 rounded-3xl border border-[#2a2a2a] bg-gradient-to-br from-[#2b3320] to-[#161616] shadow-xl">
+
+          <Card className="p-6 rounded-3xl border border-[#262626] bg-[#1c1c1c]"> 
+                  {/* <Card className="p-6 rounded-3xl bg-gradient-to-br from-[#1c1c1c] to-[#0f0f0f] border border-[#262626] animate-fade-in"> */}
 
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">{title}</h2>
@@ -128,7 +129,7 @@ export const TransactionList = ({
                 key={transaction.id}
                 className={cn(
                   "flex items-center justify-between p-4 rounded-xl border border-[#2a2a2a]",
-                  "bg-[#1a1a1a] hover:bg-[#3b4a28] transition-all duration-200 cursor-pointer",
+                  "bg-[#1a1a1a] hover:bg-[#262626] transition-all duration-200 cursor-pointer",
                   "animate-slide-in"
                 )}
                 style={{ animationDelay: `${index * 50}ms` }}
@@ -158,6 +159,8 @@ export const TransactionList = ({
                       </p>
                       <Badge
                         variant="secondary"
+
+                        // Change Catageory colors here
                         className="hidden sm:inline-flex text-xs bg-[#30391c] text-[#b3ff8c] border border-[#3d561a]"
                       >
                         {transaction.category}
@@ -198,7 +201,7 @@ export const TransactionList = ({
       <button
         onClick={() => navigate("/expenses")}
         className="mt-6 w-full py-3 text-sm font-medium rounded-full 
-          bg-[#376400] text-[#050608] hover:bg-[#6bc000] 
+          bg-[#539600] text-[#050608] hover:bg-[#6bc000] shadow-[0_0_20px_rgba(83,150,0,0.35)]
           "
       >
         View All Transactions

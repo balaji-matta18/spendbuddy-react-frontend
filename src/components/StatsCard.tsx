@@ -61,7 +61,8 @@ export const StatsCard = ({
           <Card
             className={cn(
               "p-6 transition-all duration-300 cursor-help rounded-2xl border border-[#262626]",
-              "bg-[#1c1c1c]",
+              "bg-[#181818]",
+              // #1c1c1c
               // "hover:shadow-[0_0_25px_rgba(83,150,0,0.18)]",
               className
             )}

@@ -90,8 +90,8 @@ export const StatsCard = ({
                 )}
               </div>
 
-              {/* Icon container */}
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#539600] shadow-[0_0_15px_rgba(83,150,0,0.35)]">
+              {/* Icon container #539600 */}
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#376400] shadow-[0_0_15px_rgba(83,150,0,0.35)]">
                 <Icon className="h-6 w-6 text-white" />
               </div>
             </div>
